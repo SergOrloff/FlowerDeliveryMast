@@ -1,0 +1,147 @@
+<!-- templates\cart.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2 class="text-center mb-4">Ваша корзина</h2>
+
+{% if cart_items %}
+    <div class="table-responsive mb-4">
+        <table class="table table-hover text-center"> <!-- Добавлено text-center для выравнивания по центру -->
+            <thead>
+                <tr style="background: linear-gradient(360deg, lightyellow,pink);">
+                    <th scope="col">Товар</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Итого</th>
+                    <th scope="col">Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr data-item-id="{{ item.id }}" style="background: linear-gradient(360deg, lightyellow,PowderBlue);">
+                    <td class="d-flex align-items-center" style="text-align: left;">
+                       {% if item.product.image %}
+                           <img src="{{ item.product.image.url }}" class="img-thumbnail" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                       {% else %}
+                           <img src="{% static 'images/placeholder.png' %}" class="img-thumbnail" alt="Нет изображения" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                       {% endif %}
+                       {{ item.product.name }}
+                    </td>
+                    <td>
+                        <input type="number" class="form-control quantity-input text-center" value="{{ item.quantity }}" min="1" style="width: 120px; height: 48px;margin: 0 auto;"> <!-- Центрирование поля ввода -->
+                    </td>
+                    <td>{{ item.product.price }} руб.</td>
+                    <td class="item-total">{{ item.get_total_price }} руб.</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger remove-item-btn">Удалить</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if messages %}
+        <div class="alert alert-info mt-4">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <hr class="my-5">
+
+    <div class="d-flex justify-content-between align-items-center">
+        <p class="text-end fs-4">Итого: <strong id="cart-total">{{ cart.get_total }} руб.</strong></p>
+        <a href="{% url 'checkout' %}" class="btn btn-primary{% if outside_working_hours %} disabled{% endif %}"
+   {% if outside_working_hours %}aria-disabled="true"{% endif %}>
+    Оформить заказ
+</a>
+    </div>
+{% else %}
+    <p class="empty-cart-message">Ваша корзина пуста. Пожалуйста, добавьте товары в корзину перед оформлением заказа.</p>
+    <div class="text-center">
+        <a href="{% url 'catalog' %}" class="btn btn-secondary">Вернуться в каталог</a>
+    </div>
+{% endif %}
+
+<script>
+    // Функция для предотвращения частых запросов к серверу
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    };
+
+    // Функция обновления количества товаров в корзине
+    const updateCartItem = debounce(function(itemId, newQuantity) {
+        fetch(`/cart/update/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ quantity: newQuantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем общую сумму по товару
+                document.querySelector(`tr[data-item-id="${itemId}"] .item-total`).textContent = `${data.item_total} руб.`;
+                // Обновляем итоговую сумму корзины
+                document.getElementById('cart-total').textContent = `${data.cart_total} руб.`;
+            } else {
+                alert('Ошибка обновления корзины');
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+    }, 500); // Задержка в 500 мс перед отправкой запроса
+
+    // Добавляем обработчик событий для изменения количества товара
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            const newQuantity = this.value;
+            const itemId = this.closest('tr').getAttribute('data-item-id');
+            if (newQuantity > 0) {
+                updateCartItem(itemId, newQuantity);
+            } else {
+                alert('Количество должно быть положительным числом.');
+                this.value = 1; // Восстанавливаем количество до минимального значения
+            }
+        });
+    });
+
+    // Обработчик для удаления товаров из корзины
+    document.querySelectorAll('.remove-item-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const itemId = this.closest('tr').getAttribute('data-item-id');
+            fetch(`/cart/remove/${itemId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    this.closest('tr').remove();
+                    // Пересчитать итоговую сумму
+                    const newTotal = Array.from(document.querySelectorAll('.item-total'))
+                        .reduce((total, element) => total + parseFloat(element.textContent), 0);
+                    document.getElementById('cart-total').textContent = `${newTotal.toFixed(2)} руб.`;
+                } else {
+                    alert('Ошибка удаления товара из корзины');
+                }
+            })
+            .catch(error => console.error('Ошибка:', error));
+        });
+    });
+</script>
+{% endblock %}
+

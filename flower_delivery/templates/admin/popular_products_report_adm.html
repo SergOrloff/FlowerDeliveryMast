@@ -1,0 +1,44 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="color:Teal; font-weight:bold; margin: 0;">Отчет по популярным продуктам (с {{ start_date|default_if_none:'' }} по {{ end_date|default_if_none:'' }})</h1>
+    <div>
+        <a href="{% url 'sales_report' %}" class="btn btn-primary" style="background: linear-gradient(135deg, yellow,lightgreen);"><strong>Вернуться в список отчетов</strong></a>    </div>
+    </div>
+
+<form method="get" class="form-inline mb-3">
+    <div class="form-group" style="flex: 1; max-width: 250px; color:brown;">
+        <label for="start_date"><strong>Дата начала:</strong></label>
+        <input type="date" id="start_date" name="start_date" class="form-control mx-sm-2" style="width: 100%;">
+    </div>
+    <div class="form-group" style="flex: 1; max-width: 250px; color:brown;">
+        <label for="end_date"><strong>Дата окончания:</strong></label>
+        <input type="date" id="end_date" name="end_date" class="form-control mx-sm-2" style="width: 100%;">
+    </div>
+    <button type="submit" class="btn btn-primary">Показать</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Продукт</th>
+            <th>Продано единиц </th>
+            <th> Сумма продаж</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order_items %}
+        <tr style="background: linear-gradient(360deg, lightyellow,PowderBlue);">
+            <td>{{ item.product__name }}</td>
+            <td style="text-align: center; vertical-align: middle;">{{ item.total_quantity }}</td>
+            <td style="text-align: center; vertical-align: middle;">{{ item.total_sales }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="text-center mt-3">
+    <a href="{% url 'sales_report' %}" class="btn btn-primary" style="background: linear-gradient(135deg, yellow,lightgreen);"><strong>Вернуться в список отчетов</strong></a>
+</div>
+{% endblock %}

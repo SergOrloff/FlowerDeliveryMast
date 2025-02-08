@@ -1,0 +1,71 @@
+<!-- templates/pagination.html -->
+{% load core_tags %}
+
+{% if is_paginated %}
+    <nav aria-label="Навигация по страницам">
+        <ul class="pagination justify-content-center flex-wrap">
+            <!-- Первая страница -->
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% query_transform page=1 %}" aria-label="Первая">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                        <span class="sr-only">Первая</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;&laquo;</span>
+                </li>
+            {% endif %}
+
+            <!-- Предыдущая страница -->
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% query_transform page=page_obj.previous_page_number %}" aria-label="Предыдущая">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Предыдущая</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+            {% endif %}
+
+            <!-- Номера страниц -->
+            {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?{% query_transform page=num %}">{{ num }}</a>
+                </li>
+            {% endfor %}
+
+            <!-- Следующая страница -->
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% query_transform page=page_obj.next_page_number %}" aria-label="Следующая">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Следующая</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+            {% endif %}
+
+            <!-- Последняя страница (ИСПРАВЛЕННЫЙ БЛОК) -->
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% query_transform page=page_obj.paginator.num_pages %}" aria-label="Последняя">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                        <span class="sr-only">Последняя</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;&raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

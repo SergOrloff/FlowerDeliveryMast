@@ -1,0 +1,133 @@
+<!-- templates/checkout.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2 class="text-center mb-4">Оформление заказа</h2>
+<ul id="address-suggestions" class="list-group" style="position: absolute; z-index: 1000; display: none;"></ul>
+
+<!-- Прогресс-бар для отслеживания этапа оформления -->
+<div class="progress my-4">
+    <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">Оформление заказа</div>
+</div>
+
+<!-- Проверка на наличие товаров в корзине -->
+{% if cart.items.all %}
+    <!-- Информация о корзине -->
+    <div class="table-responsive mb-4">
+        <table class="table table-hover">
+            <thead>
+                <tr style="background: linear-gradient(360deg, lightyellow,pink);">
+                    <th scope="col">Товар</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Итого</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.items.all %}
+                <tr style="background: linear-gradient(360deg, lightyellow,PowderBlue);">
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.price }} руб.</td>
+                    <td>{{ item.get_total_price }} руб.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Общая стоимость -->
+    <p class="text-end">Итого: <strong>{{ cart.get_total }} руб.</strong></p>
+
+    <!-- Форма для ввода адреса доставки -->
+    <form method="post" action="{% url 'checkout' %}" class="mt-4">
+        {% csrf_token %}
+        {% if not user.is_authenticated %}
+            <p>Для оформления заказа необходимо <a href="{% url 'login' %}?next={{ request.path }}">войти</a> или <a href="{% url 'register' %}?next={{ request.path }}">зарегистрироваться</a>.</p>
+        {% endif %}
+        <div class="form-group mb-3 position-relative">
+            <label for="address">Адрес доставки</label>
+            <input type="text" name="address" id="address" class="form-control" required placeholder="Введите адрес">
+        </div>
+
+        <!-- Новое поле для комментариев к заказу -->
+        <div class="form-group mb-3">
+            <label for="comments">Комментарии к заказу (необязательно)</label>
+            <textarea name="comments" rows="3" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Оформить заказ</button>
+    </form>
+{% else %}
+    <p class="text-center">Ваша корзина пуста. Пожалуйста, добавьте товары в корзину перед оформлением заказа.</p>
+    <div class="text-center">
+        <a href="{% url 'catalog' %}" class="btn btn-secondary">Вернуться в каталог</a>
+    </div>
+{% endif %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addressInput = document.getElementById("address");
+        const suggestionsBox = document.getElementById("address-suggestions");
+
+        addressInput.addEventListener("input", function() {
+            const query = addressInput.value.trim();
+
+            // Показать подсказки только если введено более 3 символов
+            if (query.length < 3) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            fetch("/dadata/suggest-address/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                suggestionsBox.innerHTML = ''; // Очищаем предыдущие подсказки
+                if (data.suggestions && data.suggestions.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    data.suggestions.forEach(item => {
+                        const suggestion = document.createElement("li");
+                        suggestion.classList.add("list-group-item", "list-group-item-action");
+                        suggestion.textContent = item.value;
+                        suggestion.addEventListener("click", () => {
+                            addressInput.value = item.value; // Установка выбранного значения
+                            suggestionsBox.style.display = 'none'; // Скрытие подсказок
+                        });
+                        suggestionsBox.appendChild(suggestion);
+                    });
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                suggestionsBox.style.display = 'none';
+            });
+        });
+
+        // Закрываем подсказки, если пользователь кликает вне поля ввода
+        document.addEventListener("click", function(event) {
+            if (!addressInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        // Закрываем подсказки при нажатии клавиши Esc
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Escape") {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+

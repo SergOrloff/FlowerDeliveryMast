@@ -1,0 +1,80 @@
+<!-- templates/order_history.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">История заказов</h2>
+
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="text-center">№ заказа</th>
+                        <th scope="col" class="text-center">Дата заказа</th>
+                        <th scope="col">Товары</th>
+                        <th scope="col" class="text-center">Итого</th>
+                        <th scope="col" class="text-center">Статус</th>
+                        <th scope="col" class="text-center">Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr style="background: linear-gradient(360deg, lightyellow,PowderBlue);">
+                        <td class="text-center">{{ order.id }}</td>
+                        <td class="text-center">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ order.created_at|date:"d.m.Y H:i" }}
+                        </td>
+                        <td>
+                            <ul class="list-unstyled">
+                                {% for item in order.orderitem_set.all|slice:":3" %}
+                                <li>
+                                    <i class="fas fa-box me-1"></i>
+                                    {{ item.product.name }} - {{ item.quantity }} шт.
+                                </li>
+                                {% endfor %}
+                                {% if order.orderitem_set.count > 3 %}
+                                <li>и еще {{ order.orderitem_set.count|add:"-3" }}...</li>
+                                {% endif %}
+                            </ul>
+                        </td>
+                        <td class="text-center">
+                            <i class="fas fa-coins me-1"></i>
+                            {{ order.get_total_price }} руб.
+                        </td>
+                        <td class="text-center">
+                            <span class="badge
+                                {% if order.status == 'pending' %} bg-warning
+                                {% elif order.status == 'confirmed' %} bg-primary
+                                {% elif order.status == 'shipped' %} bg-info
+                                {% elif order.status == 'delivered' %} bg-success
+                                {% else %} bg-danger {% endif %}">
+                                <i class="fas
+                                    {% if order.status == 'pending' %} fa-clock
+                                    {% elif order.status == 'confirmed' %} fa-check-circle
+                                    {% elif order.status == 'shipped' %} fa-truck
+                                    {% elif order.status == 'delivered' %} fa-box-open
+                                    {% else %} fa-times-circle {% endif %} me-1">
+                                </i>
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-info-circle me-1"></i> Подробнее
+                            </a>
+                            <a href="{% url 'repeat_order' order.id %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-redo-alt me-1"></i> Повторить заказ
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center">У вас нет заказов.</p>
+    {% endif %}
+</div>
+{% endblock %}

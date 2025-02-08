@@ -1,0 +1,70 @@
+<!-- \templates\about.html -->
+{% extends 'base.html' %}
+{% block title %}О нас{% endblock %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, lightblue, lightgreen);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+    }
+</style>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">О нас</h2>
+
+    <!-- Пример для добавления изображения -->
+    <div class="text-center mb-4">
+        <img src="{% static 'images/logo.png' %}" alt="FlowerDelivery Logo" class="img-fluid rounded shadow" style="max-width: 300px;">
+    </div>
+
+    <p class="lead text-center" style="color: blue;">
+        <strong>FlowerDelivery - это сервис по доставке цветов в Москве. Мы предлагаем широкий выбор цветов для любого события</strong>.
+    </p>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h4>Наша миссия</h4>
+            <p>
+                Наша миссия - приносить радость людям через красивейшие букеты и отличное обслуживание. Мы стараемся сделать процесс заказа цветов простым и удобным для всех наших клиентов.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h4>Почему выбирают нас?</h4>
+            <ul>
+                <li>Быстрая и надежная доставка</li>
+                <li>Широкий выбор букетов на любой вкус и бюджет</li>
+                <li>Качественные и свежие цветы</li>
+                <li>Отличное обслуживание клиентов</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Раздел с социальными сетями -->
+    <div class="text-center mt-5">
+        <h4>Следите за нами в социальных сетях</h4>
+        <div class="d-flex justify-content-center mt-3">
+            <a href="https://t.me/Flow_Deliv_Bot" target="_blank" rel="noopener noreferrer" class="me-3" aria-label="Facebook">
+                <img src="{% static 'images/telegram.png' %}" alt="Facebook" class="img-thumbnail" style="width: 40px;">
+            </a>
+            <a href="https://vk.com" target="_blank" rel="noopener noreferrer" class="me-3" aria-label="VK">
+                <img src="{% static 'images/vk.png' %}" alt="VK" class="img-thumbnail" style="width: 38px;">
+            </a>
+            <a href="https://rutube.ru" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <img src="{% static 'images/rutube.png' %}" alt="Twitter" class="img-thumbnail" style="width: 40px;">
+            </a>
+        </div>
+    </div>
+
+    <!-- Дополнительный блок с контактами -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h4 class="text-center">Контактная информация</h4>
+            <p class="text-center">Если у вас есть вопросы, свяжитесь с нами по телефону <a href="tel:+74951234567">+7 (495) 123-45-67</a> или по email <a href="mailto:info@flowerdelivery.ru">info@flowerdelivery.ru</a>.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

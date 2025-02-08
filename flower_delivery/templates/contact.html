@@ -1,0 +1,79 @@
+<!-- templates/contact.html -->
+{% extends 'base.html' %}
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, lightblue, lightgreen);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+    }
+</style>
+<h2 class="text-center mb-4">Контакты</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p>Вы можете связаться с нами по телефону: <strong>+7 (495) 123-45-67</strong></p>
+        <p>Или написать нам на email: <strong>info@flowerdelivery.ru</strong></p>
+        <p>Наш адрес: <strong>г. Москва, ул. Цветочная, 5</strong></p>
+
+        <!-- Добавляем форму обратной связи с reCAPTCHA -->
+        <h5 class="mt-4">Оставьте нам сообщение:</h5>
+        <form method="post" action="{% url 'send_message' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name">Ваше имя</label>
+                <input type="text" class="form-control" id="name" name="name" autocomplete="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="email">Ваш Email</label>
+                <input type="email" class="form-control" id="email" name="email" autocomplete="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="message">Ваше сообщение</label>
+                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+            </div>
+
+            <!-- reCAPTCHA (если используется) -->
+            <div class="mb-3">
+                <div class="g-recaptcha" data-sitekey="6LcG-rQqAAAAAORcmIVOdTHuP-tXeb40CCsCQvXj"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Наше местоположение:</h5>
+        <div class="map-responsive">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d282.462560186346!2d37.5541431!3d55.5027444!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x414aa9529c4a4d73%3A0x15b030d5c2807100!2sUlitsa%20Tsvetochnaya%2C%205%2C%20Moskva%2C%20142171!5e0!3m2!1sen!2sru!4v1736630044307!5m2!1sen!2sru"
+                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+<!--                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2244.2227905564474!2d37.61749731575101!3d55.75582698055415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x414ab5f96a845555%3A0x759e0db1f7d776df!2sMoscow!5e0!3m2!1sen!2sru!4v1618391321550!5m2!1sen!2sru"-->
+        </div>
+    </div>
+</div>
+
+<style>
+    .map-responsive {
+        overflow: hidden;
+        padding-bottom: 56.25%; /* Соотношение сторон 16:9 */
+        position: relative;
+        height: 0;
+    }
+
+    .map-responsive iframe {
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        border: 0;
+    }
+</style>
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+
+{% endblock %}

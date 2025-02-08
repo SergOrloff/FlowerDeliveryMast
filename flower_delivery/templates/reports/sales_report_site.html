@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+<!--{% load static %}-->
+
+{% block content %}
+<div class="content">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Статистический отчет по продажам</h2>
+        <h3>(с {{ start_date|default_if_none:'' }} по {{ end_date|default_if_none:'' }})</h3>
+        <div>
+            <a href="{% url 'profile' %}" class="btn btn-primary">В личный кабинет</a>
+        </div>
+    </div>
+
+    {% if request.GET.e %}
+        <div class="alert alert-danger" role="alert">
+            Произошла ошибка при генерации отчёта. Пожалуйста, попробуйте ещё раз.
+        </div>
+    {% endif %}
+
+    <form method="get" class="form-inline mb-3">
+        <div class="form-group" style="flex: 1; max-width: 200px;">
+            <label for="start_date">Дата начала:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control mx-sm-2" style="width: 100%;">
+        </div>
+        <div class="form-group" style="flex: 1; max-width: 200px;">
+            <label for="end_date">Дата окончания:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control mx-sm-2" style="width: 100%;">
+        </div>
+        <button type="submit" class="btn btn-primary">Показать</button>
+    </form>
+
+    <h4>Общие показатели за период с {{ start_date|default_if_none:'' }} по {{ end_date|default_if_none:'' }}</h4>
+    <ul class="list-unstyled">
+        <li class="mb-2">
+            <strong>Общий объем продаж: <span class="text-success">{{ report.total_sales }}</span></strong>
+        </li>
+        <li class="mb-2">
+            <strong>Общее количество заказов: <span class="text-success">{{ report.total_orders }}</span></strong>
+        </li>
+        <li class="mb-2">
+            <strong>Общее количество клиентов: <span class="text-success">{{ report.total_customers }}</span></strong>
+        </li>
+    </ul>
+
+    <h4>Графическое представление показателей продаж (с {{ start_date|default_if_none:'' }} по {{ end_date|default_if_none:'' }})</h4>
+    <div>
+        {{ graph_html|safe }}
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    <a href="{% url 'profile' %}" class="btn btn-primary">В личный кабинет</a>
+</div>
+{% endblock %}

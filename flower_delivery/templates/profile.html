@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .menu-item {
+        color: black; /* Начальный цвет текста */
+        text-decoration: none; /* Убирает подчеркивание */
+        transition: color 0.3s; /* Плавный переход цвета */
+    }
+
+    .menu-item:hover {
+        color: red; /* Цвет текста при наведении */
+        font-weight: bold;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="mb-4 text-center">Личный кабинет</h2>
+            <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+            <p><strong>Электронная почта:</strong> {{ user.email }}</p>
+
+            <p><strong>Телефон:</strong> {{ user.profile.phone|default:"Не указан" }}</p>
+            <p><strong>ФИО:</strong> {{ user.profile.full_name|default:"Не указано" }}</p>
+            <p><strong>Адрес доставки:</strong> {{ user.profile.delivery_address|default:"Не указан" }}</p>
+
+            <div class="mb-3">
+                <a href="{% url 'password_change' %}" class="btn btn-outline-secondary w-100 mb-2 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-user"></i> Изменить пароль</a>
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary w-100 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-user"></i> Редактировать профиль</a>
+            </div>
+            {% if not user.is_superuser and not user.is_staff %}
+                <p><strong style="color: red;">Вы не являетесь администратором или персоналом сайта. Отчеты по продажам доступны не все</strong></p>
+                <a href="{% url 'popular_products_report' %}" class="btn btn-outline-secondary w-100 mb-2 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-file-alt"></i> Отчет по популярным продуктам (за указанный период)</a>
+            {% else %}
+                <p><strong style="color: green;">Вы администратор или персонал сайта.      Вам доступны отчеты:</strong></p>
+                <!-- Дополнительные элементы для администраторов или персонала сайта -->
+                <a href="{% url 'popular_products_report' %}" class="btn btn-outline-secondary w-100 mb-2 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-file-alt"></i> Отчет по популярным продуктам (за указанный период)</a>
+                <a href="{% url 'reports_list' %}" class="btn btn-outline-secondary w-100 mb-2 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-file-alt"></i> Отчеты по продажам (за указанный период)</a>
+                <a href="{% url 'sales_report_site' %}" class="btn btn-outline-secondary w-100 mb-2 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-chart-bar"></i> Статистический отчет по продажам (с диаграммой)</a>
+                <a href="{% url 'sales_report_site_fig' %}" class="btn btn-outline-secondary w-100 mb-2 menu-item" style="background: linear-gradient(360deg, lightyellow,PowderBlue);"><i class="fas fa-chart-line"></i> Обобщённый отчет по продажам (с графиками)</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if messages %}
+        <div class="alert alert-success mt-4 text-center" role="alert">
+            <h4 class="alert-heading">Добро пожаловать, {{ user.username }}!</h4>
+            <p>Вы успешно зарегистрировались и теперь можете пользоваться всеми функциями нашего сервиса.</p>
+            <hr>
+            <p class="mb-0">Если у вас возникнут вопросы, обращайтесь к нам через раздел "Контакты".</p>
+        </div>
+    {% endif %}
+
+    <hr class="my-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h2 class="mb-4 text-center">История заказов</h2>
+            {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Номер заказа</th>
+                                <th scope="col">Дата заказа</th>
+                                <th scope="col">Общая сумма</th>
+                                <th scope="col">Статус</th>
+                                <th scope="col">Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody style="background: linear-gradient(360deg, lightyellow,PowderBlue);">
+                            {% for order in orders %}
+                            <tr>
+                                <td><a href="{% url 'order_detail' order.id %}" class="text-decoration-none">{{ order.id }}</a></td>
+                                <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                <td>{{ order.get_total_price }} руб.</td>
+                                <td>
+                                    <span class="badge
+                                        {% if order.status == 'pending' %} bg-warning
+                                        {% elif order.status == 'confirmed' %} bg-primary
+                                        {% elif order.status == 'shipped' %} bg-info
+                                        {% elif order.status == 'delivered' %} bg-success
+                                        {% else %} bg-danger {% endif %}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'repeat_order' order.id %}" class="btn btn-sm btn-outline-secondary">Повторить заказ</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center">У вас еще нет заказов.</p>
+                <div class="text-center mt-3">
+                    <a href="{% url 'catalog' %}" class="btn btn-primary">Перейти в каталог</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

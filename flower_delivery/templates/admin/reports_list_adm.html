@@ -1,0 +1,51 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="color:Teal; font-weight:bold; margin: 0;">Отчеты по продажам (с {{ start_date|default_if_none:'' }} по {{ end_date|default_if_none:'' }})</h1>
+    <div>
+        <a href="{% url 'sales_report' %}" class="btn btn-primary" style="background: linear-gradient(135deg, yellow,lightgreen);"><strong>Вернуться в список отчетов</strong></a>
+    </div>
+</div>
+
+<form method="get" class="form-inline mb-3">
+    <div class="form-group" style="flex: 1; max-width: 250px; color:brown;">
+        <label for="start_date"><strong>Дата начала:</strong></label>
+        <input type="date" id="start_date" name="start_date" class="form-control mx-sm-2" style="width: 100%;">
+    </div>
+    <div class="form-group" style="flex: 1; max-width: 250px; color:brown;">
+        <label for="end_date"><strong>Дата окончания:</strong></label>
+        <input type="date" id="end_date" name="end_date" class="form-control mx-sm-2" style="width: 100%;">
+    </div>
+    <button type="submit" class="btn btn-primary">Показать</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Общий объем продаж</th>
+            <th>Количество заказов</th>
+            <th>Количество клиентов</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in reports %}
+        <tr style="background: linear-gradient(360deg, lightyellow,PowderBlue);">
+            <td>{{ report.created_at|date:"d.m.Y" }}</td>
+            <td style="text-align: center; vertical-align: middle;">{{ report.total_sales }}</td>
+            <td style="text-align: center; vertical-align: middle;">{{ report.total_orders }}</td>
+            <td style="text-align: center; vertical-align: middle;">{{ report.total_customers }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>График продаж по дням (с {{ start_date|default_if_none:'' }} по {{ end_date|default_if_none:'' }})</h2>
+<div>
+    {{ graph_html1|safe }}
+</div>
+<div>
+    <a href="{% url 'sales_report' %}" class="btn btn-primary" style="background: linear-gradient(135deg, yellow,lightgreen);"><strong>Вернуться в список отчетов</strong></a>
+</div>
+{% endblock %}

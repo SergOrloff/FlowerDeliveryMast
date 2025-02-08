@@ -1,0 +1,11 @@
+<!-- templates\update_stock.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Изменить количество товара на складе</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>
+<a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Назад к списку продуктов</a>
+{% endblock %}

@@ -1,0 +1,157 @@
+<!-- templates/product_detail.html -->
+{% extends 'base.html' %}
+{% block title %}{{ product.name }}{% endblock %}
+{% load static %}
+{% block content %}
+<div class="row mt-5">
+    <div class="col-md-6">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+        {% else %}
+            <img src="{% static 'images/placeholder.png' %}" class="img-fluid rounded" alt="Нет изображения">
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h2>{{ product.name }}</h2>
+        <p>{{ product.description }}</p>
+        <p><strong><i class="fas fa-ruble-sign"></i> Цена: {{ product.price }} ₽</strong></p>
+        <p id="total-price"><strong><i class="fas fa-calculator"></i> Итого: {{ product.price }} ₽</strong></p>
+        <form method="POST" action="{% url 'add_to_cart' product.id %}" id="add-to-cart-form">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Количество:</label>
+                <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control" style="width: 100px;" onchange="updateTotal({{ product.price }})">
+            </div>
+            <button type="button" class="btn btn-success" id="add-to-cart-btn">
+                <i class="fas fa-cart-plus"></i> Добавить в корзину
+            </button>
+        </form>
+        <div id="cart-message" class="alert alert-info mt-3" style="display: none;">
+            <span id="cart-message-text"></span>
+            <a href="{% url 'view_cart' %}" class="btn btn-primary btn-sm">Перейти в корзину</a>
+            <button class="btn btn-secondary btn-sm" onclick="hideCartMessage()">Продолжить покупки</button>
+        </div>
+    </div>
+</div>
+
+<hr class="my-4">
+
+<h3><i class="fas fa-comments"></i> Отзывы</h3>
+{% if product.reviews.exists %}
+    <ul class="list-group mb-4">
+        {% for review in product.reviews.all %}
+        <li class="list-group-item">
+            <p><strong><i class="fas fa-user"></i> {{ review.user.username }}</strong> - Рейтинг:
+                {% for i in "12345" %}
+                    {% with star_value=forloop.counter %}
+                        <img src="{% if star_value <= review.rating %}
+                                     {% static 'images/tulpan/flower-filled.png' %}
+                                 {% else %}
+                                     {% static 'images/tulpan/flower-empty.png' %}
+                                 {% endif %}"
+                             alt="Цветочек"
+                             class="flower-icon">
+                    {% endwith %}
+                {% endfor %}
+            </p>
+            <p>{{ review.comment }}</p>
+            <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Отзывов пока нет. Будьте первым, кто оставит отзыв!</p>
+{% endif %}
+
+<a href="{% url 'add_review' product.id %}" class="btn btn-primary mt-4">
+    <i class="fas fa-plus"></i> Добавить отзыв
+</a>
+
+<!-- Стили для иконок цветочков -->
+<style>
+    .flower-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 2px;
+        display: inline-block;
+    }
+</style>
+
+<script>
+    function updateTotal(price) {
+        const quantity = document.getElementById("quantity").value;
+        const totalPrice = price * quantity;
+        document.getElementById("total-price").innerText = `Итого: ${totalPrice.toFixed(2)} ₽`;
+    }
+
+    // Получаем CSRF-токен из cookies
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 10) === 'csrftoken=') {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // AJAX-запрос для добавления товара в корзину
+    document.getElementById('add-to-cart-btn').addEventListener('click', function() {
+        const form = document.getElementById('add-to-cart-form');
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken()
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                const cartMessage = document.getElementById('cart-message');
+                document.getElementById('cart-message-text').textContent = data.message;
+                cartMessage.style.display = 'block';
+                cartMessage.classList.add('fade-in');
+                setTimeout(() => cartMessage.classList.remove('fade-in'), 500);
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+    });
+
+    function hideCartMessage() {
+        const cartMessage = document.getElementById('cart-message');
+        cartMessage.classList.add('fade-out');
+        setTimeout(() => {
+            cartMessage.style.display = 'none';
+            cartMessage.classList.remove('fade-out');
+        }, 300);
+    }
+</script>
+
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s forwards;
+    }
+    .fade-out {
+        animation: fadeOut 0.3s forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+</style>
+{% endblock %}

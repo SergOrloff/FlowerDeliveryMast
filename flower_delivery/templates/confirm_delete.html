@@ -1,0 +1,39 @@
+<!-- templates/confirm_delete.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-center mb-4">Удалить товар: {{ product.name }}?</h2>
+
+<!-- Кнопка для вызова модального окна -->
+<div class="text-center">
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+        Удалить
+    </button>
+    <a href="{% url 'catalog' %}" class="btn btn-secondary">Отмена</a>
+</div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Подтверждение удаления</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить товар <strong>{{ product.name }}</strong>?
+                <p class="text-danger">Это действие нельзя отменить.</p>
+            </div>
+            <div class="modal-footer">
+                <form method="POST" action="{% url 'remove_product' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

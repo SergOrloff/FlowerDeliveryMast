@@ -1,0 +1,23 @@
+<!-- templates/order_success.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="text-center mt-5">
+    <img src="{% static 'images/success-icon.png' %}" alt="Иконка успешного заказа" width="400" class="mb-4">
+    <h2 class="mb-4 text-success">Заказ №{{ order.id }} успешно оформлен!</h2>
+    <p class="lead">Ваш заказ был успешно принят. Спасибо, что выбрали нас!</p>
+    <p class="text-center">Номер вашего заказа: <strong>{{ order.id }}</strong></p>
+    <hr class="my-4">
+    <div class="d-flex justify-content-center flex-wrap">
+        <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-secondary btn-lg me-2 mb-2">
+            <i class="fas fa-info-circle me-1"></i> Детали заказа
+        </a>
+        <a href="{% url 'order_history' %}" class="btn btn-outline-success btn-lg me-2 mb-2">
+            <i class="fas fa-history me-1"></i> Посмотреть заказы
+        </a>
+        <a href="{% url 'catalog' %}" class="btn btn-primary btn-lg mb-2">
+            <i class="fas fa-shopping-basket me-1"></i> Вернуться к каталогу
+        </a>
+    </div>
+</div>
+{% endblock %}
