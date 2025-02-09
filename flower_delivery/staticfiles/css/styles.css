@@ -183,7 +183,7 @@ body.dark-theme .alert {
 .carousel-inner img {
     width: 100%; /* Полная ширина изображения */
     height: auto; /* Автоматическая высота для сохранения пропорций */
-    max-height: 400px; /* Установите максимальную высоту изображения */
+    max-height: 200px; /* Установите максимальную высоту изображения */
     object-fit: cover; /* Обеспечивает обрезку изображения по размеру */
 }
 
@@ -203,7 +203,7 @@ body.dark-theme .alert {
 .carousel-caption {
     background: rgba(0, 0, 0, 0.5); /* Полупрозрачный темный фон */
     color: #fff; /* Яркий белый текст */
-    padding: 20px;
+    padding: 5px;
     border-radius: 8px;
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
     font-size: 1.5em; /* Увеличенный размер текста */

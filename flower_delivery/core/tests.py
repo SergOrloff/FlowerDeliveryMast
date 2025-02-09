@@ -1,8 +1,9 @@
 # core/tests.py
 import sys
 import os
+print(sys.path)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+print(sys.path)
 from django.test import TestCase
 from django.urls import reverse
 from .models import Product, Order, OrderItem

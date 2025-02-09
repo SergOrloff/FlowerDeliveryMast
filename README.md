@@ -1,155 +1,259 @@
-# FlowerDeliveryMast
-## Flower Delivery — это веб-приложение на Django для заказа и доставки цветов. Проект предоставляет функционал интернет-магазина с возможностью управления товарами, корзиной, заказами, отзывами и аналитикой.
+# Структура файлов и папок проекта "flowers_shop" в формате дерева с разметкой в Markdown
 
-### 📖Описание
-- Приложение позволяет пользователям просматривать каталог цветов и букетов, добавлять товары в корзину, оформлять заказы и оставлять отзывы о продуктах. Администраторы и менеджеры могут управлять товарами, отслеживать заказы и просматривать отчеты по продажам.
+# Directory Tree
+## C:/Users/Саша/Documents/GitHub/FlowerDeliveryMast/flower_delivery
 
-### ⚙️ Функциональные возможности
-- Каталог товаров: просмотр товаров по категориям, детальная информация о каждом продукте.
-- Корзина: добавление товаров в корзину, изменение количества, удаление товаров.
-- Оформление заказа: ввод адреса доставки, комментариев, подтверждение заказа.
-- История заказов: просмотр предыдущих заказов, повторное оформление заказа.
-- Отзывы: оставление отзывов и рейтингов для продуктов.
-- Управление товарами: добавление, редактирование и удаление товаров (для менеджеров).
-- Отчеты по продажам: генерация отчетов с графиками, экспорт в CSV и PDF (для администраторов).
-- Интеграция с Telegram: уведомления о новых заказах через Telegram-бота.
-- Поиск адресов: автодополнение адресов с использованием API DaData.
-- Реализация GDPR: экспорт данных пользователя и удаление аккаунта по запросу.
-
-### 🛠️ Установка и запуск
-#### Предварительные требования
-- Python 3.12+
-- Django 3.2+
-- Виртуальное окружение (рекомендуется)
-
-#### Шаги установки
-1. Клонируйте репозиторий:
-
-````
-git clone https://github.com/YourUsername/flowerdeliverymast.git
-cd flower_delivery
-````
-2. Создайте и активируйте виртуальное окружение:
-
-````
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# Linux/MacOS
-source venv/bin/activate
-````
-3. Установите зависимости:
-
-````
-pip install -r requirements.txt
-````
-4. Выполните миграции базы данных:
-
-````
-python manage.py migrate
-````
-5. Создайте суперпользователя:
-
-````
-python manage.py createsuperuser
-````
-6. Соберите статику:
-
-````
-python manage.py collectstatic
-````
-7. Запустите сервер разработки:
-
-````
-python manage.py runserver
-````
-8. Приложение будет доступно по адресу http://127.0.0.1:8000/.
-
-### 📚 Использование
-#### Для пользователей
-- Регистрация и авторизация: зарегистрируйтесь на сайте или войдите в свой аккаунт.
-- Просмотр каталога: перейдите на страницу каталога и выберите интересующие товары.
-- Добавление в корзину: добавьте товары в корзину, укажите количество.
-- Оформление заказа: перейдите в корзину и нажмите "Оформить заказ", заполните необходимые данные.
-- История заказов: в личном кабинете вы можете просматривать свои заказы и повторять их.
-- Оставление отзывов: на странице продукта вы можете оставить отзыв и рейтинг.
-#### Для менеджеров и администраторов
-- Доступ в админ-панель: перейдите по адресу http://127.0.0.1:8000/admin/ и войдите под учетной записью администратора.
-- Управление товарами: добавляйте новые продукты, редактируйте существующие, управляйте остатками на складе.
-- Управление заказами: просматривайте новые заказы, обновляйте их статус, связывайтесь с клиентами при необходимости.
-- Просмотр отчетов: в разделе отчетов вы можете генерировать отчеты по продажам за различные периоды, экспортировать их в CSV или PDF.
-### 🔧 Настройки
-
-- Для работы некоторых функций приложения необходимо создать файл .env в корневой директории и указать в нем следующие переменные:
-
-````
-# Django Secret Key
-DJANGO_SECRET_KEY='ваш ключ'
-
-# Включить режим отладки (True/False)
-DJANGO_DEBUG=True
-
-# Настройки SMTP для отправки писем
-EMAIL_HOST_USER='exempl@exempl.ru'
-EMAIL_HOST_PASSWORD='@123456789'
-DEFAULT_FROM_EMAIL='exempl@exempl.ru''
-ADMIN_EMAIL='exempl@exempl.ru''
-ENABLE_EMAIL_NOTIFICATIONS=true  # или false, чтобы отключить почтовые уведомления
-EMAIL_HOST='smtp.yandex.ru' #Можно использовать любой
-EMAIL_PORT= 587
-EMAIL_USE_TLS=true
-EMAIL_USE_SSL=false
-
-# Ключи для DaData API
-DADATA_API_KEY='ваш ключ'
-DADATA_SECRET_KEY='ваш ключ'
-
-
-TELEGRAM_BOT_TOKEN='ваш токен'
-ADMIN_TELEGRAM_CHAT_ID=ваш ID
-ENABLE_TELEGRAM_NOTIFICATIONS=true  # или false, чтобы отключить уведомления
-````
-
-#### Настройка Telegram бота
-1. Создайте бота с помощью @BotFather в Telegram и получите токен.
-2. Укажите токен в переменной TELEGRAM_BOT_TOKEN в файле .env.
-3. В модели UserProfile предусмотрено поле telegram_chat_id. Пользователи могут связать свой аккаунт с Telegram для получения уведомлений.
-
-#### Настройка DaData
-1. Зарегистрируйтесь на DaData.ru и получите API-токен.
-2. Укажите токен в переменной DADATA_API_TOKEN в файле .env.
-
-### 📊 Отчеты и аналитика
-#### Отчеты по продажам доступны в админ-панели.
-- Вы можете выбирать период отчета, просматривать графики продаж, экспорта данных в CSV и PDF.
-- Для генерации графиков используется библиотека Plotly.
-- PDF-отчеты формируются с помощью ReportLab.
-
-### 🛡️ Безопасность и GDPR
-- Реализована возможность экспорта данных пользователя в соответствии с требованиями GDPR.
-- Пользователи могут запросить удаление своего аккаунта и данных.
-
-#### 📦 Зависимости
-##### Основные библиотеки и фреймворки, используемые в проекте:
-````
-Django
-Django Widgets
-Python Telegram Bot
-Requests
-ReportLab
-Plotly
-Pandas
-DaData API
-````
-Полный список зависимостей указан в файле requirements.txt.
-
-### 📝 Лицензия
-#### Этот проект распространяется под лицензией MIT. Подробности смотрите в файле LICENSE.
-
-### 📞 Контакты
-#### Если у вас есть вопросы или предложения, вы можете связаться с нами по электронной почте:
-
-- Email: 6202818@gmail.com
-## Спасибо за использование Flower Delivery! 🌸
+```
+├── .env
+├── .pytest_cache/
+│   ├── CACHEDIR.TAG
+│   ├── README.md
+│   ├── v/
+│   │   ├── cache/
+│   │   │   ├── lastfailed
+│   │   │   ├── nodeids
+│   │   │   ├── stepwise
+├── bot/
+│   ├── __init__.py
+├── bot_logs.log
+├── core/
+│   ├── admin.py
+│   ├── apps.py
+│   ├── fonts/
+│   │   ├── DejaVuSans-Bold.ttf
+│   │   ├── DejaVuSans-BoldOblique.ttf
+│   │   ├── DejaVuSans-ExtraLight.ttf
+│   │   ├── DejaVuSans-Oblique.ttf
+│   │   ├── DejaVuSans.ttf
+│   │   ├── Roboto-Italic.ttf
+│   │   ├── Roboto.ttf
+│   ├── forms.py
+│   ├── management/
+│   │   ├── commands/
+│   │   │   ├── generate_reports.py
+│   │   │   ├── run_bot.py
+│   ├── migrations/
+│   │   ├── __init__.py
+│   ├── models.py
+│   ├── signals.py
+│   ├── tasks.py
+│   ├── templatetags/
+│   │   ├── core_tags.py
+│   │   ├── form_filters.py
+│   ├── tests/
+│   │   ├── conftest.py
+│   │   ├── factories.py
+│   │   ├── test_forms.py
+│   │   ├── test_integration.py
+│   │   ├── test_models.py
+│   │   ├── test_tasks.py
+│   │   ├── test_views.py
+│   │   ├── __init__.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── utils.py
+│   ├── views.py
+│   ├── __init__.py
+├── db.sqlite3
+├── debug.pdf
+├── flower_delivery/
+│   ├── asgi.py
+│   ├── celery.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   ├── __init__.py
+├── manage.py
+├── media/
+│   ├── products/
+│   │   ├── 110-sm-mishka-haki-01-405x405.webp
+│   │   ├── 15-kustovyh-romashek-v-korzine-04-900x900.webp
+│   │   ├── 15-roz-silva-pink-40-sm-405x405.webp
+│   │   ├── 15-sirenevyh-roz-60-sm-405x405.webp
+│   │   ├── 17-sinih-orhidey-dendrobium-v-korzine-405x405.webp
+│   │   ├── 25-liliy-miks-900x900.webp
+│   │   ├── 25-liliy-miks-900x900_rxoiRzt.webp
+│   │   ├── 25-pionov-sara-bernar-v-korobke-900x900.webp
+│   │   ├── 25-tyulpanov-kolumbus-0-900x900.webp
+│   │   ├── 25-tyulpanov-miks-99-405x405.webp
+│   │   ├── 35-krasnyh-roz-70-sm-900x900.webp
+│   │   ├── 35-tyulpanov-krasnyh-99-405x405.webp
+│   │   ├── 5-belo-rozovyh-orhidey-897x900.webp
+│   │   ├── 501-krasnaya-roza-40-sm-990-900x900.webp
+│   │   ├── 51-krasnyy-pion-v-upak-9-900x900.webp
+│   │   ├── 75-kustovyh-romashek-04-899x899.webp
+│   │   ├── 9-rozovyh-liliy-900x900.webp
+│   │   ├── bel-pion-i-roz-gorten-v-korobke-900x900.webp
+│   │   ├── buket-dnya-suhocvety--roza-i-bulgur-v-yashchike-405x405.webp
+│   │   ├── buket-nevesty-kremovaya-gipsofila-900x900.webp
+│   │   ├── buket-nevesty-siniy-dendrobium-405x405.webp
+│   │   ├── buket-rozarium2-405x405.webp
+│   │   ├── desktop.ini
+│   │   ├── konfety-zoloto-v-korobke-405x405.webp
+│   │   ├── mandarin-korica-900x854.webp
+│   ├── temp/
+├── pytest.ini
+├── requirements.txt
+├── seckey_djng.py
+├── start.sh
+├── static/
+│   ├── css/
+│   │   ├── styles.css
+│   ├── images/
+│   │   ├── favicon.ico
+│   │   ├── logo.png
+│   │   ├── logo__.png
+│   │   ├── promo1.jpg
+│   │   ├── promo2.jpg
+│   │   ├── promo3.jpg
+│   │   ├── promo4.jpg
+│   │   ├── rutube.png
+│   │   ├── success-icon — копия.png
+│   │   ├── success-icon.png
+│   │   ├── success-icon1.png
+│   │   ├── telegram.png
+│   │   ├── tulpan/
+│   │   │   ├── flower-empty.png
+│   │   │   ├── flower-empty1.png
+│   │   │   ├── flower-filled.png
+│   │   │   ├── flower-filled1.png
+│   │   │   ├── tulip_flower_icon_cb.svg
+│   │   │   ├── tulip_flower_icon_contr.svg
+│   │   │   ├── tulip_flower_spring_icon_219602.svg
+│   │   ├── vk.png
+├── staticfiles/
+│   ├── admin/
+│   │   ├── css/
+│   │   │   ├── autocomplete.css
+│   │   │   ├── base.css
+│   │   │   ├── changelists.css
+│   │   │   ├── dark_mode.css
+│   │   │   ├── dashboard.css
+│   │   │   ├── forms.css
+│   │   │   ├── login.css
+│   │   │   ├── nav_sidebar.css
+│   │   │   ├── responsive.css
+│   │   │   ├── responsive_rtl.css
+│   │   │   ├── rtl.css
+│   │   │   ├── unusable_password_field.css
+│   │   │   ├── vendor/
+│   │   │   │   ├── select2/
+│   │   │   ├── widgets.css
+│   │   ├── img/
+│   │   │   ├── address-card-regular.svg
+│   │   │   ├── calendar-icons.svg
+│   │   │   ├── favicon.ico
+│   │   │   ├── gis/
+│   │   │   │   ├── move_vertex_off.svg
+│   │   │   │   ├── move_vertex_on.svg
+│   │   │   ├── icon-addlink.svg
+│   │   │   ├── icon-alert.svg
+│   │   │   ├── icon-calendar.svg
+│   │   │   ├── icon-changelink.svg
+│   │   │   ├── icon-clock.svg
+│   │   │   ├── icon-deletelink.svg
+│   │   │   ├── icon-hidelink.svg
+│   │   │   ├── icon-no.svg
+│   │   │   ├── icon-unknown-alt.svg
+│   │   │   ├── icon-unknown.svg
+│   │   │   ├── icon-viewlink.svg
+│   │   │   ├── icon-yes.svg
+│   │   │   ├── inline-delete.svg
+│   │   │   ├── LICENSE
+│   │   │   ├── README.txt
+│   │   │   ├── search.svg
+│   │   │   ├── selector-icons.svg
+│   │   │   ├── sorting-icons.svg
+│   │   │   ├── tooltag-add.svg
+│   │   │   ├── tooltag-arrowright.svg
+│   │   ├── js/
+│   │   │   ├── actions.js
+│   │   │   ├── admin/
+│   │   │   │   ├── DateTimeShortcuts.js
+│   │   │   │   ├── RelatedObjectLookups.js
+│   │   │   ├── autocomplete.js
+│   │   │   ├── calendar.js
+│   │   │   ├── cancel.js
+│   │   │   ├── change_form.js
+│   │   │   ├── core.js
+│   │   │   ├── filters.js
+│   │   │   ├── inlines.js
+│   │   │   ├── jquery.init.js
+│   │   │   ├── nav_sidebar.js
+│   │   │   ├── popup_response.js
+│   │   │   ├── prepopulate.js
+│   │   │   ├── prepopulate_init.js
+│   │   │   ├── SelectBox.js
+│   │   │   ├── SelectFilter2.js
+│   │   │   ├── theme.js
+│   │   │   ├── unusable_password_field.js
+│   │   │   ├── urlify.js
+│   │   │   ├── vendor/
+│   │   │   │   ├── jquery/
+│   │   │   │   ├── select2/
+│   │   │   │   ├── xregexp/
+│   ├── css/
+│   │   ├── styles.css
+│   ├── images/
+│   │   ├── favicon.ico
+│   │   ├── logo.png
+│   │   ├── logo__.png
+│   │   ├── promo1.jpg
+│   │   ├── promo2.jpg
+│   │   ├── promo3.jpg
+│   │   ├── promo4.jpg
+│   │   ├── rutube.png
+│   │   ├── success-icon — копия.png
+│   │   ├── success-icon.png
+│   │   ├── success-icon1.png
+│   │   ├── telegram.png
+│   │   ├── tulpan/
+│   │   │   ├── flower-empty.png
+│   │   │   ├── flower-empty1.png
+│   │   │   ├── flower-filled.png
+│   │   │   ├── flower-filled1.png
+│   │   │   ├── tulip_flower_icon_cb.svg
+│   │   │   ├── tulip_flower_icon_contr.svg
+│   │   │   ├── tulip_flower_spring_icon_219602.svg
+│   │   ├── twitter.png
+│   │   ├── vk.png
+├── telegram_bot.py
+├── templates/
+│   ├── about.html
+│   ├── add_product.html
+│   ├── add_review.html
+│   ├── admin/
+│   │   ├── popular_products_report_adm.html
+│   │   ├── reports_list_adm.html
+│   │   ├── sales_report.html
+│   │   ├── sales_report_site_adm.html
+│   │   ├── sales_report_site_adm0.html
+│   ├── base.html
+│   ├── cart.html
+│   ├── catalog.html
+│   ├── checkout.html
+│   ├── confirm_delete.html
+│   ├── contact.html
+│   ├── delete_user.html
+│   ├── edit_product.html
+│   ├── edit_user.html
+│   ├── order_detail.html
+│   ├── order_history.html
+│   ├── order_success.html
+│   ├── pagination.html
+│   ├── privacy_policy.html
+│   ├── product_detail.html
+│   ├── profile.html
+│   ├── registration/
+│   │   ├── login.html
+│   │   ├── password_reset.html
+│   │   ├── register.html
+│   ├── reports/
+│   │   ├── popular_products_report.html
+│   │   ├── reports_list.html
+│   │   ├── sales_report_site.html
+│   │   ├── sales_report_site_fig.html
+│   ├── update_stock.html
+│   ├── user_list.html
+├── tmp/
+├── __init__.py

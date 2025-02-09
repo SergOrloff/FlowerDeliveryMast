@@ -233,6 +233,26 @@ body.dark-theme .alert {
 button {
     z-index: 1000; /* Сделайте кнопку выше других элементов */
 }
+
+#address-suggestions {
+    width: 100%;
+    max-width: 500px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+#address-suggestions li {
+    cursor: pointer;
+    padding: 10px;
+    transition: background 0.2s;
+}
+
+#address-suggestions li:hover {
+    background: #f8f9fa;
+}
 <style>
     .flower-icon {
         width: 20px;
@@ -295,5 +315,7 @@ button {
         text-transform: uppercase;
         font-weight: bold;
     }
+
+
 </style>
 

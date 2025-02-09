@@ -60,7 +60,7 @@ locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 # Constants for working hours
 WORKING_HOURS_START = 9  # Начало рабочего времени (9 утра)
-WORKING_HOURS_END = 20  # Конец рабочего времени (6 вечера)
+WORKING_HOURS_END = 21  # Конец рабочего времени (6 вечера)
 
 date_str = '2025-01-10'
 naive_datetime = datetime.strptime(date_str, '%Y-%m-%d')
@@ -110,6 +110,25 @@ def product_list(request):
         'category_choices': Product.CATEGORY_CHOICES  # Добавляем выбор категорий в контекст
     })
 
+@require_POST
+def suggest_address(request):
+    query = request.POST.get('query', '')
+
+    # Интеграция с Dadata API
+    api_key = os.getenv("DADATA_API_KEY")
+    url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address"
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {"query": query}
+
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        suggestions = [suggestion["value"] for suggestion in response.json().get("suggestions", [])]
+        return JsonResponse({"suggestions": suggestions})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 def get_or_create_cart(request):
     """Функция для получения или создания корзины, привязанной к пользователю или сессии"""

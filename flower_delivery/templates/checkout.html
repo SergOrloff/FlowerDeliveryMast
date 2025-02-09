@@ -87,7 +87,15 @@
                 },
                 body: JSON.stringify({ query })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Ошибка сети');
+                return response.json();
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                suggestionsBox.style.display = 'none';
+                return { suggestions: [] };
+            })
             .then(data => {
                 suggestionsBox.innerHTML = ''; // Очищаем предыдущие подсказки
                 if (data.suggestions && data.suggestions.length > 0) {

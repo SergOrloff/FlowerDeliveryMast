@@ -15,6 +15,7 @@
 │   │   │   ├── stepwise
 ├── bot/
 │   ├── __init__.py
+├── bot_logs.log
 ├── core/
 │   ├── admin.py
 │   ├── apps.py
@@ -32,18 +33,6 @@
 │   │   │   ├── generate_reports.py
 │   │   │   ├── run_bot.py
 │   ├── migrations/
-│   │   ├── 0001_initial.py
-│   │   ├── 0002_alter_orderitem_quantity.py
-│   │   ├── 0003_alter_product_category.py
-│   │   ├── 0004_product_stock.py
-│   │   ├── 0005_report_alter_cartitem_unique_together.py
-│   │   ├── 0006_remove_userprofile_telegram_chat_id_and_more.py
-│   │   ├── 0007_rename_telegram_id_userprofile_telegram_chat_id.py
-│   │   ├── 0008_product_current_rating.py
-│   │   ├── 0009_alter_product_current_rating_alter_review_product.py
-│   │   ├── 0010_alter_review_comment.py
-│   │   ├── 0011_review_updated_at.py
-│   │   ├── 0012_alter_report_options.py
 │   │   ├── __init__.py
 │   ├── models.py
 │   ├── signals.py
@@ -51,6 +40,15 @@
 │   ├── templatetags/
 │   │   ├── core_tags.py
 │   │   ├── form_filters.py
+│   ├── tests/
+│   │   ├── conftest.py
+│   │   ├── factories.py
+│   │   ├── test_forms.py
+│   │   ├── test_integration.py
+│   │   ├── test_models.py
+│   │   ├── test_tasks.py
+│   │   ├── test_views.py
+│   │   ├── __init__.py
 │   ├── tests.py
 │   ├── urls.py
 │   ├── utils.py
@@ -80,6 +78,7 @@
 │   │   ├── 25-tyulpanov-miks-99-405x405.webp
 │   │   ├── 35-krasnyh-roz-70-sm-900x900.webp
 │   │   ├── 35-tyulpanov-krasnyh-99-405x405.webp
+│   │   ├── 5-belo-rozovyh-orhidey-897x900.webp
 │   │   ├── 501-krasnaya-roza-40-sm-990-900x900.webp
 │   │   ├── 51-krasnyy-pion-v-upak-9-900x900.webp
 │   │   ├── 75-kustovyh-romashek-04-899x899.webp
@@ -91,6 +90,7 @@
 │   │   ├── buket-rozarium2-405x405.webp
 │   │   ├── desktop.ini
 │   │   ├── konfety-zoloto-v-korobke-405x405.webp
+│   │   ├── mandarin-korica-900x854.webp
 │   ├── temp/
 ├── pytest.ini
 ├── requirements.txt
