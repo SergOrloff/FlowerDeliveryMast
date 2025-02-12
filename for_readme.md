@@ -34,6 +34,18 @@
 │   │   │   ├── generate_reports.py
 │   │   │   ├── run_bot.py
 │   ├── migrations/
+│   │   ├── 0001_initial.py
+│   │   ├── 0002_alter_orderitem_quantity.py
+│   │   ├── 0003_alter_product_category.py
+│   │   ├── 0004_product_stock.py
+│   │   ├── 0005_report_alter_cartitem_unique_together.py
+│   │   ├── 0006_remove_userprofile_telegram_chat_id_and_more.py
+│   │   ├── 0007_rename_telegram_id_userprofile_telegram_chat_id.py
+│   │   ├── 0008_product_current_rating.py
+│   │   ├── 0009_alter_product_current_rating_alter_review_product.py
+│   │   ├── 0010_alter_review_comment.py
+│   │   ├── 0011_review_updated_at.py
+│   │   ├── 0012_alter_report_options.py
 │   │   ├── __init__.py
 │   ├── models.py
 │   ├── signals.py
