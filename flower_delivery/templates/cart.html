@@ -27,12 +27,12 @@
                        {% endif %}
                        {{ item.product.name }}
                     </td>
-                    <td>
+                    <td style="vertical-align: middle;">
                         <input type="number" class="form-control quantity-input text-center" value="{{ item.quantity }}" min="1" style="width: 120px; height: 48px;margin: 0 auto;"> <!-- Центрирование поля ввода -->
                     </td>
-                    <td>{{ item.product.price }} руб.</td>
-                    <td class="item-total">{{ item.get_total_price }} руб.</td>
-                    <td>
+                    <td style="vertical-align: middle;">{{ item.product.price }} руб.</td>
+                    <td class="item-total" style="vertical-align: middle;">{{ item.get_total_price }} руб.</td>
+                    <td style="vertical-align: middle;">
                         <button class="btn btn-sm btn-danger remove-item-btn">Удалить</button>
                     </td>
                 </tr>

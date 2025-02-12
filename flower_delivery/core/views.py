@@ -7,6 +7,7 @@ from .models import Product, Cart, CartItem, Order, OrderItem, Review, Report
 from .utils import generate_sales_report
 from .utils import generate_sales_report_by_custom_period
 from datetime import datetime, timedelta, time
+from dadata import Dadata
 from dateutil.parser import parse
 from django.conf import settings
 from django.contrib import messages
@@ -111,24 +112,51 @@ def product_list(request):
     })
 
 @require_POST
+@csrf_exempt
 def suggest_address(request):
-    query = request.POST.get('query', '')
-
-    # Интеграция с Dadata API
-    api_key = os.getenv("DADATA_API_KEY")
-    url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address"
-    headers = {
-        "Authorization": f"Token {api_key}",
-        "Content-Type": "application/json"
-    }
-    data = {"query": query}
-
+    logger.info(f"Received query: {request.POST.get('query')}")
+    logger.debug(f"Request body: {request.body.decode()}")
+    print("[DEBUG] Запрос получен!")  # Этот вывод должен появиться в консоли
     try:
-        response = requests.post(url, json=data, headers=headers)
-        suggestions = [suggestion["value"] for suggestion in response.json().get("suggestions", [])]
+        data = json.loads(request.body.decode('utf-8'))  # Явное указание кодировки
+        query = data.get('query', '')
+        print(f"[DADATA] Запрос: '{query}'")
+
+        api_key = os.getenv("DADATA_API_KEY")
+        if not api_key:
+            raise ValueError("API-ключ Dadata отсутствует")
+
+        url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address"
+        headers = {
+            "Authorization": f"Token {api_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "query": query,
+            "count": 5,
+            "locations": [{"country": "*"}]  # Фильтр для всех стран
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+
+        dadata_response = response.json()
+        print(f"[DADATA] Ответ: {json.dumps(dadata_response, ensure_ascii=False)}")
+
+        suggestions = [suggestion["value"] for suggestion in dadata_response.get("suggestions", [])]
+        if not suggestions:
+            print("[DADATA] Не найдено ни одной подсказки для запроса.")
         return JsonResponse({"suggestions": suggestions})
+
+    except json.JSONDecodeError:
+        print("[DADATA] Ошибка: Неверный формат JSON")
+        return JsonResponse({"error": "Неверный формат JSON"}, status=400)
+    except requests.HTTPError as e:
+        print(f"[DADATA] Ошибка HTTP: {str(e)}")
+        return JsonResponse({"error": "Ошибка при обращении к Dadata"}, status=500)
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        print(f"[DADATA] Ошибка: {str(e)}")
+        return JsonResponse({"error": "Ошибка сервера"}, status=500)
 
 def get_or_create_cart(request):
     """Функция для получения или создания корзины, привязанной к пользователю или сессии"""
@@ -1245,9 +1273,9 @@ def generate_sales_report_pdf(request):
         pdf_data = buffer.getvalue()
         buffer.close()
 
-        # Сохраняем для отладки
-        with open('debug.pdf', 'wb') as f:
-            f.write(pdf_data)
+        # # Сохраняем для отладки
+        # with open('debug.pdf', 'wb') as f:
+        #     f.write(pdf_data)
 
         # Проверка содержимого
         if not pdf_data:

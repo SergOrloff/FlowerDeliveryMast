@@ -174,7 +174,7 @@ body.dark-theme .alert {
 .card img {
     width: 100%;
     height: auto; /* Сохраняет пропорции */
-    max-height: 250px; /* Установите нужную максимальную высоту */
+    max-height: 300px; /* Установите нужную максимальную высоту */
     object-fit: cover; /* Обрезает изображение для заполнения карточки */
     border-top-left-radius: 10px; /* Закругление углов */
     border-top-right-radius: 10px; /* Закругление углов */
@@ -183,7 +183,7 @@ body.dark-theme .alert {
 .carousel-inner img {
     width: 100%; /* Полная ширина изображения */
     height: auto; /* Автоматическая высота для сохранения пропорций */
-    max-height: 200px; /* Установите максимальную высоту изображения */
+    max-height: 300px; /* Установите максимальную высоту изображения */
     object-fit: cover; /* Обеспечивает обрезку изображения по размеру */
 }
 
@@ -302,7 +302,6 @@ button {
     .modal-content .btn {
         width: 45%;
     }
-
     .sticker {
         position: absolute;
         top: 10px;
@@ -315,7 +314,5 @@ button {
         text-transform: uppercase;
         font-weight: bold;
     }
-
-
 </style>
 

@@ -10,12 +10,12 @@ if sys.platform.startswith('win'):
 from .settings import *
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-os.environ['KALEIDO_TMP'] = os.path.join(BASE_DIR, 'tmp')
-os.makedirs(os.environ['KALEIDO_TMP'], exist_ok=True)
-PLOTLY_IO_KALEIDO_SCOPE = {
-    'timeout': 60,
-    'mathjax': False
-}
+# os.environ['KALEIDO_TMP'] = os.path.join(BASE_DIR, 'tmp')
+# os.makedirs(os.environ['KALEIDO_TMP'], exist_ok=True)
+# PLOTLY_IO_KALEIDO_SCOPE = {
+#     'timeout': 60,
+#     'mathjax': False
+# }
 
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-aj49+pk6yxa75+a2+nnmh3dwt61ycss^-655+v3z39&3dvmxu1')
@@ -100,16 +100,16 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-PLOTLY_IO_KALEIDO_SCOPE = {
-    'timeout': 60,
-    'mathjax': False,
-    'quiet': True,
-    'scale': 2
-}
-PLOTLY_IO_IMAGE_FORMAT = 'png'
-PLOTLY_IO_IMAGE_ENGINE = 'kaleido'
-CHOREOGRAPHER_DEBUG_BROWSER = True  # Для диагностики
-CHOREOGRAPHER_BROWSER_PATH = 'C:/Program Files/Google/Chrome/Application/chrome.exe'  # Явное указание браузера
+# PLOTLY_IO_KALEIDO_SCOPE = {
+#     'timeout': 60,
+#     'mathjax': False,
+#     'quiet': True,
+#     'scale': 2
+# }
+# PLOTLY_IO_IMAGE_FORMAT = 'png'
+# PLOTLY_IO_IMAGE_ENGINE = 'kaleido'
+# CHOREOGRAPHER_DEBUG_BROWSER = True  # Для диагностики
+# CHOREOGRAPHER_BROWSER_PATH = 'C:/Program Files/Google/Chrome/Application/chrome.exe'  # Явное указание браузера
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
@@ -152,8 +152,8 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # Две недели
 
 # Настройки рабочее время
-WORKING_HOURS_START = 7  # Начало рабочего дня (9 утра)
-WORKING_HOURS_END = 20   # Конец рабочего дня (6 вечера)
+WORKING_HOURS_START = 1  # Начало рабочего дня (9 утра)
+WORKING_HOURS_END = 24   # Конец рабочего дня (6 вечера)
 WORKING_DAYS = [0, 1, 2, 3, 4, 5, 6]  # Понедельник - Суббота (0 - Понедельник, 5 - Суббота)
 
 # SECURE_HSTS_SECONDS = 31536000  # Включите строгий транспортный уровень безопасности
@@ -166,3 +166,23 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 RECAPTCHA_SECRET_KEY = '6Lcmv7QqAAAAADl6VRJCk5EiTdxCBaH7Z-4K9IBX'
 YOUR_RECAPTCHA_SITE_KEY = '6Lcmv7QqAAAAAJ1PBvEJAK8ztRUbMSa8TLf6Obty'
+
+# LOGGING = {
+#        'version': 1,
+#        'disable_existing_loggers': False,
+#        'handlers': {
+#            'console': {
+#                'class': 'logging.StreamHandler',
+#            },
+#        },
+#        'loggers': {
+#            'django': {
+#                'handlers': ['console'],
+#                'level': 'DEBUG',
+#            },
+#            'apps': {  # Замените на имя вашего приложения
+#                'handlers': ['console'],
+#                'level': 'DEBUG',
+#            },
+#        },
+#    }

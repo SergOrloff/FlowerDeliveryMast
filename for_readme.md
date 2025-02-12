@@ -19,6 +19,7 @@
 ├── core/
 │   ├── admin.py
 │   ├── apps.py
+│   ├── fixtures/
 │   ├── fonts/
 │   │   ├── DejaVuSans-Bold.ttf
 │   │   ├── DejaVuSans-BoldOblique.ttf
@@ -55,7 +56,6 @@
 │   ├── views.py
 │   ├── __init__.py
 ├── db.sqlite3
-├── debug.pdf
 ├── flower_delivery/
 │   ├── asgi.py
 │   ├── celery.py
@@ -95,7 +95,6 @@
 ├── pytest.ini
 ├── requirements.txt
 ├── seckey_djng.py
-├── start.sh
 ├── static/
 │   ├── css/
 │   │   ├── styles.css
@@ -255,6 +254,5 @@
 │   │   ├── sales_report_site_fig.html
 │   ├── update_stock.html
 │   ├── user_list.html
-├── tmp/
 ├── __init__.py
 ```

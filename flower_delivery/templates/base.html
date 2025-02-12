@@ -179,6 +179,101 @@
         });
     </script>
 
+    <script>
+        function getCSRFToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return decodeURIComponent(value);
+                }
+            }
+            return '';
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            const addressInput = document.getElementById("address");
+            const suggestionsBox = document.getElementById("address-suggestions");
+            let timeoutId; // Перенесите объявление сюда
+
+            addressInput.addEventListener("input", function() {
+                clearTimeout(timeoutId);
+                const query = addressInput.value.trim(); // Получаем значение ЗДЕСЬ
+
+                timeoutId = setTimeout(() => {
+                    if (query.length < 3) {
+                        suggestionsBox.style.display = 'none';
+                        return;
+                    }
+
+                    fetch("/dadata/suggest-address/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": getCSRFToken(),
+                        },
+                        body: JSON.stringify({ query })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.error || 'Ошибка сервера')
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.error) {
+                            console.error('Ошибка Dadata:', data.error);
+                            suggestionsBox.innerHTML = '<li class="list-group-item text-danger">Ошибка загрузки</li>';
+                suggestionsBox.style.display = 'block';
+                            return;
+                        }
+                        suggestionsBox.innerHTML = ''; // Очищаем предыдущие подсказки
+                        if (data.suggestions && data.suggestions.length > 0) {
+                            suggestionsBox.style.display = 'block';
+                            // Позиционирование
+                            const inputRect = addressInput.getBoundingClientRect();
+                            suggestionsBox.style.top = `${inputRect.bottom + window.scrollY}px`; // Исправлено
+                            suggestionsBox.style.left = `${inputRect.left + window.scrollX}px`; // Исправлено
+                            suggestionsBox.style.width = `${inputRect.width}px`; // Исправлено
+
+                            data.suggestions.forEach(item => {
+                                const suggestion = document.createElement("li");
+                                suggestion.classList.add("list-group-item", "list-group-item-action");
+                                suggestion.textContent = item;  // ✅ Исправлено здесь
+                                suggestion.addEventListener("click", () => {
+                                    addressInput.value = item;  // ✅ И здесь
+                                    suggestionsBox.style.display = 'none';
+                                });
+                                suggestionsBox.appendChild(suggestion);
+                            });
+                        } else {
+                            suggestionsBox.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        suggestionsBox.style.display = 'none';
+                    });
+                }, 300); // Задержка 300 мс
+            });
+
+            // Закрываем подсказки, если пользователь кликает вне поля ввода
+            document.addEventListener("click", function(event) {
+                if (!addressInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+
+            // Закрываем подсказки при нажатии клавиши Esc
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "Escape") {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
     <style>
         body {
             transition: background-color 0.3s, color 0.3s;
